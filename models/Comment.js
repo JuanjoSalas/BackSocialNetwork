@@ -14,9 +14,9 @@ const CommentSchema = new mongoose.Schema({
         type: ObjectId,
         ref: 'User'
     },
-    LikeIds: [{
-        UserId: { type: ObjectId, ref: 'User' },
-    }],
+    LikeIds: [
+        { type: ObjectId, ref: 'User' },
+    ],
 }, { timestamps: true });
 
 const Comment = mongoose.model('Comment', CommentSchema);

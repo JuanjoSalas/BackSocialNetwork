@@ -6,12 +6,14 @@ const { dbConnection } = require('./config/config.js');
 const path = require('path');
 const swaggerUI = require('swagger-ui-express');
 const docs = require('./docs/index');
+const cors = require('cors')
 require('./crons/cleanupUsers.js');
 
 dbConnection();
 
-app.use(cors())
+app.use(cors());
 app.use(express.json());
+
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
 

@@ -4,14 +4,21 @@ const User = require('../models/User');
 const PostController = {
 	async create(req, res) {
 		try {
-			if (req.file) req.body.profileImg = req.file.filename;
-			const post = await Post.create({ ...req.body, image_path: req.file.filename });
-			await User.findByIdAndUpdate(req.user._id, { $push: { PostIds: {PostId: post._id} } });
-			res.status(201).send({msg: 'Post is created',post});
+			const postData = {
+				title: req.body.title,
+				body: req.body.body
+			};
+			if (req.file) {
+				postData.image_path = req.file.filename;
+			}
+			const post = await Post.create(postData);
+			await User.findByIdAndUpdate(req.user._id, { $push: {  PostIds: post._id } } );
+			res.status(201).send({ msg: 'Post is created', post });
 		} catch (error) {
 			console.error(error);
 			res.status(500).send({ msg: 'There was a problem creating the post' });
 		}
+
 	},
 	async update(req, res) {
 		try {
@@ -33,12 +40,13 @@ const PostController = {
 	},
 	async getAll(req, res) {
 		try {
-			const { page = 1, limit = 10 } = req.query;
+			const { page = 1, limit = 100 } = req.query;
 			const posts = await Post.find()
-			.populate('LikeIds.UserId')
-			.limit(limit)
-			.skip((page - 1) * limit);
-			res.send({msg: 'All posts', posts});
+				.populate('LikeIds.UserId')
+				.populate('CommentIds')
+				.limit(limit)
+				.skip((page - 1) * limit);
+			res.send({ msg: 'All posts', posts });
 		} catch (error) {
 			console.error(error);
 		}
@@ -50,45 +58,47 @@ const PostController = {
 					$search: req.params.title,
 				},
 			});
-			res.send({msg: 'Post by title found',posts});
+			res.send({ msg: 'Post by title found', posts });
 		} catch (error) {
 			console.error(error);
 		}
 	},
 	async getById(req, res) {
 		try {
-			const post = await Post.findById(req.params._id).populate('LikeIds.UserId');
-			res.send({msg: 'Post by id found',post});
+			const post = await Post.findById(req.params._id)
+			.populate('LikeIds.UserId')
+			.populate('CommentIds');
+			res.send({ msg: 'Post by id found', post });
 		} catch (error) {
 			console.error(error);
 		}
 	},
 	async like(req, res) {
-        try {
-            const post = await Post.findByIdAndUpdate(
-                req.params._id,
-                { $push: { LikeIds: { UserId: req.user._id }}},
-                { new: true }
-            );
-            res.send({msg: 'Post liked',post});
-        } catch (error) {
-            console.error(error);
-            res.status(500).send({ msg: "There was a problem with your like"});
-        }
-    },
-    async dislike(req, res) {
-        try {
-            const post = await Post.findByIdAndUpdate(
-                req.params._id,
-                { $pull: { LikeIds: { UserId: req.user._id }}},
-				{new: true}
-            );
-            res.send({ msg: "Like deleted", post });
-        } catch (error) {
-            console.error(error)
-            res.status(500).send({ msg: "There was a problem trying to remove the like"})
-        }
-    }  
+		try {
+			const post = await Post.findByIdAndUpdate(
+				req.params._id,
+				{ $push: { LikeIds: { UserId: req.user._id } } },
+				{ new: true }
+			);
+			res.send({ msg: 'Post liked', post });
+		} catch (error) {
+			console.error(error);
+			res.status(500).send({ msg: "There was a problem with your like" });
+		}
+	},
+	async dislike(req, res) {
+		try {
+			const post = await Post.findByIdAndUpdate(
+				req.params._id,
+				{ $pull: { LikeIds: { UserId: req.user._id } } },
+				{ new: true }
+			);
+			res.send({ msg: "Like deleted", post });
+		} catch (error) {
+			console.error(error)
+			res.status(500).send({ msg: "There was a problem trying to remove the like" })
+		}
+	}
 };
 
 module.exports = PostController;

@@ -16,12 +16,12 @@ const PostSchema = new mongoose.Schema({
         ref: 'User'
     },
     status: String,
-    TagIds: [{
-        TagId: {type: ObjectId, ref: 'Tag'}
-    }],
-    LikeIds: [{
-        UserId: {type: ObjectId, ref: 'User'}
-    }],
+    TagIds: [
+        {type: ObjectId, ref: 'Tag'}
+    ],
+    LikeIds: [
+         {type: ObjectId, ref: 'User'}
+    ],
     CommentIds: [{
         type: ObjectId,
         ref: 'Comment'

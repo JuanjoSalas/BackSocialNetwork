@@ -11,6 +11,7 @@ const authentication = async (req, res, next) => {
 		if (!user) {
 			return res.status(401).send({ msg: 'You are not autorized.' });
 		}
+		req.token = token;
 		req.user = user;
 		next();
 	} catch (error) {

@@ -14,19 +14,19 @@ const UserSchema = new mongoose.Schema(
 		location: String,
 		role: String,
 		online: Boolean,
-		image_path: String,
+		//image_path: String,
 		TagIds: [
-			{
-				TagId: { type: ObjectId, ref: 'Tag' },
-			},
+			
+				 { type: ObjectId, ref: 'Tag' },
+			
 		],
 		PostIds: [
-			{
-				PostId: { type: ObjectId, ref: 'Post' },
-			},
+			
+				 { type: ObjectId, ref: 'Post' },
+			
 		],
-		FollowerIds: [{ FollowerId: { type: ObjectId, ref: 'User' } }],
-		FollowIds: [{ FollowId: { type: ObjectId, ref: 'User' } }],
+		FollowerIds: [{ type: ObjectId, ref: 'User' }],
+		FollowIds: [{ type: ObjectId, ref: 'User' } ],
 		CommentIds: [{
 		type: ObjectId,
 		ref: 'Comment'
