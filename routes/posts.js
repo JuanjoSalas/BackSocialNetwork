@@ -12,6 +12,6 @@ router.get('/', authentication, PostController.getAll);
 router.get('/title/:title', authentication, PostController.getPostsByTitle);
 router.get('/id/:_id', PostController.getById);
 router.put('/like/:_id', authentication, PostController.like);
-router.delete('/like/:_id', authentication, PostController.dislike);
+router.put('/dislike/:_id', authentication, PostController.dislike);
 
 module.exports = router;

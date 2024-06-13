@@ -77,7 +77,7 @@ const PostController = {
 		try {
 			const post = await Post.findByIdAndUpdate(
 				req.params._id,
-				{ $push: { LikeIds: { UserId: req.user._id } } },
+				{ $push: { LikeIds: req.user._id  } },
 				{ new: true }
 			);
 			res.send({ msg: 'Post liked', post });
@@ -90,7 +90,7 @@ const PostController = {
 		try {
 			const post = await Post.findByIdAndUpdate(
 				req.params._id,
-				{ $pull: { LikeIds: { UserId: req.user._id } } },
+				{ $pull: { LikeIds: req.user._id  } },
 				{ new: true }
 			);
 			res.send({ msg: "Like deleted", post });
